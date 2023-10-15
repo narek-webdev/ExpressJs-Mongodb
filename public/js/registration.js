@@ -4,5 +4,18 @@ document.getElementById("button_submit").addEventListener("click", function () {
   const password = document.getElementById("password").value;
   const confirm_password = document.getElementById("confirm_password").value;
 
-  console.log(email, password, name, confirm_password);
+  fetch("registration", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ email, password, name, confirm_password }),
+  })
+    .then((res) => res.json())
+    .then((res) => {
+      if (res.errors) {
+        console.log(res.errors);
+      }
+    })
+    .catch((err) => console.log(err, " - err"));
 });

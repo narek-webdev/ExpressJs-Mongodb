@@ -1,19 +1,19 @@
-import express, { Router, Request, Response } from "express";
-import connection from "../config/mongodb.config";
+import express, { Router } from "express";
+import UserControler from "../controllers/users.contollers";
+import { REGISTRATION_VALIDATOR } from "../helpers/validator";
 
 const router: Router = express.Router();
 
-router.get("/login", async (_: Request, res: Response) => {
-  const db = await connection();
-  const collection = db?.collection("users");
+router
+  .get("/login", UserControler.loginPage)
+  .post("/login", UserControler.loginIndex);
 
-  console.log(await collection?.find({}).toArray());
-
-  res.render("login/login.ejs");
-});
-
-router.get("/registration", (_: Request, res: Response) => {
-  res.render("registration/registration.ejs");
-});
+router
+  .get("/registration", UserControler.registrationPage)
+  .post(
+    "/registration",
+    REGISTRATION_VALIDATOR,
+    UserControler.registrationIndex
+  );
 
 export default router;

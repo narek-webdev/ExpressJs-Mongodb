@@ -7,7 +7,6 @@ const client = new MongoClient(
 const connection = async () => {
   try {
     await client.connect();
-
     return client.db("express-js");
   } catch (error) {
     console.error("Error connecting to the database", error);
