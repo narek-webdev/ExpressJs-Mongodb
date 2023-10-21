@@ -21,8 +21,6 @@ const registration = async (data: T_AUTH) => {
 const login = async (data: T_AUTH) => {
   const db = await connection();
   const collection = db?.collection(collection_name);
-  await collection?.deleteMany({});
-
   const user = await collection?.findOne({ email: data.email });
 
   if (!user) return false;
