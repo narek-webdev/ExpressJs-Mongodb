@@ -1,12 +1,8 @@
 import express, { Express } from "express";
 import path from "path";
 import session from "express-session";
-import passport from "passport";
-import { Strategy } from "passport-local";
-import connection from "./config/mongodb.config";
 import AuthRoute from "./routes/auth.route";
-import { ObjectId } from "mongodb";
-
+import { checkAuth, checkLoggedIn } from "./middewares/auth.middleware";
 const app: Express = express();
 
 app.set("view engine", "ejs");
@@ -26,50 +22,10 @@ app.use(
   })
 );
 
-app.use(passport.initialize());
-app.use(passport.session());
+app.use("/auth", checkAuth, AuthRoute);
 
-passport.use(
-  new Strategy(
-    {
-      usernameField: "email",
-      passwordField: "password",
-    },
-    async (email, password, done) => {
-      try {
-        const db = await connection();
-        const collection = db?.collection("users");
-        const user = await collection?.findOne({ email });
-
-        return user ? done(null, user._id) : done(null, false);
-      } catch (error) {
-        console.log(error, " - error");
-      }
-    }
-  )
-);
-
-passport.serializeUser((_id: any, done) => {
-  done(null, _id);
-});
-
-passport.deserializeUser(async (_id: any, done) => {
-  const db = await connection();
-  const collection = db?.collection("users");
-  const user = await collection?.findOne(
-    { _id: new ObjectId(_id) },
-    { projection: { password: 0 } }
-  );
-
-  if (!user) return done(null, null);
-
-  done(null, user);
-});
-
-app.use("/auth", AuthRoute);
-
-app.use("/dashboard", (req, res) => {
-  // console.log(req.session);
+app.use("/dashboard", checkLoggedIn, (_, res) => {
+  res.render("dashboard/dashboard.ejs");
 });
 
 app.listen(process.env.PORT);

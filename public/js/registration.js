@@ -13,8 +13,8 @@ document.getElementById("button_submit").addEventListener("click", function () {
   })
     .then((res) => res.json())
     .then((res) => {
-      if (res.errors) {
-        console.log(res.errors);
+      if (res.success) {
+        window.open("http://localhost:1000/dashboard", "_self");
       }
     })
     .catch((err) => console.log(err, " - err"));
