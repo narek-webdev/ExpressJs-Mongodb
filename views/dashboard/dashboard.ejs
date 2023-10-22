@@ -4,7 +4,6 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dashboard</title>
-    <!-- <link rel="stylesheet" href="../../static/css/auth.css" /> -->
   </head>
   <body>
     <a href="dashboard/create">Create</a>
@@ -16,12 +15,18 @@
         <th>Title</th>
         <th>Image</th>
       </tr>
+      <% posts.forEach(function(post){ %>
       <tr>
-        <td>Post 1</td>
-        <td>Image 1</td>
+        <td><%= post.title %></td>
+        <td><%= post.description %></td>
+        <td>
+          <a href="#">Edit</a>
+        </td>
+        <td>
+          <button>Delete</button>
+        </td>
       </tr>
+      <% }); %>
     </table>
-
-    <!-- <script src="/static/js/login.js"></script> -->
   </body>
 </html>

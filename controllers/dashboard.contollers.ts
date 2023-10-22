@@ -1,21 +1,34 @@
 import { Request, Response } from "express";
 import Dashboard from "../models/dashboard.model";
+import { validationResult } from "express-validator";
+import { ISession } from "../helpers/types";
+
+const index = async (req: Request, res: Response) => {
+  const posts = await Dashboard.getUserPosts((req.session as ISession)?.user);
+
+  return res.render("dashboard/dashboard.ejs", { posts });
+};
+
+const createIndex = async (req: Request, res: Response) =>
+  res.render("dashboard/create.ejs");
 
 const createPost = async (req: Request, res: Response) => {
-  const post = await Dashboard.createPost(req.body);
+  const errors = validationResult(req).array({ onlyFirstError: true });
 
-  console.log(post);
+  if (errors.length) return res.status(500).json({ errors });
 
-  // if (!user)
-  //   return res.send({ success: false, msg: "Email or password is wrong" });
+  const post = await Dashboard.createPost(
+    req.body,
+    (req.session as ISession)?.user
+  );
 
-  // (req.session as ISession).user = user;
-
-  // res.send({ success: true });
+  res.send({ success: !!post?.insertedId });
 };
 
 const DashboardControler = {
   createPost,
+  createIndex,
+  index,
 };
 
 export default DashboardControler;

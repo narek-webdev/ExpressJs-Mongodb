@@ -18,3 +18,8 @@ export const REGISTRATION_VALIDATOR = [
       return true;
     }),
 ];
+
+export const CREATE_POST_VALIDATOR = [
+  body("title").trim().notEmpty(),
+  body("description").trim().notEmpty().withMessage("Provide a valid email"),
+];
